@@ -1,35 +1,41 @@
-const { createStore, combineReducers } = window.Redux;
-const { reducer, actions, create, enter, dispatchAll } = window.ReduxRTC;
+var { createStore, combineReducers } = window.Redux;
+var { reducer, actions, create, enter, dispatchAll } = window.ReduxRTC;
 
-const setTrue = () => ({ type: 'SHARED_BOOLEAN_TRUE' });
-const setFalse = () => ({ type: 'SHARED_BOOLEAN_FALSE' });
-const toggleReducer = (state = false, action) => {
+var setTrue = function () {
+    return { type: 'SHARED_BOOLEAN_TRUE' }
+};
+var setFalse = function () {
+    return { type: 'SHARED_BOOLEAN_FALSE' }
+};
+var toggleReducer = function (state, action) {
     switch (action.type) {
         case 'SHARED_BOOLEAN_TRUE': return true;
         case 'SHARED_BOOLEAN_FALSE': return false;
-        default: return state;
+        default: return state || false;
     }
 }
 
-const store = createStore(combineReducers({
+var store = createStore(combineReducers({
     rtc: reducer,
     boolean: toggleReducer
 }));
 
-const root = find('#root')[0];
-const data = find('#data')[0];
-const roomid = find('#roomid').on('keyup', inputChange)[0];
-const open = find('#open').on('click', openRoom)[0];
-const join = find('#join').on('click', joinRoom)[0];
-const toggle = find('#toggle').on('click', toggleState)[0];
+var dom = {
+    root: find('#root')[0],
+    data: find('#data')[0],
+    room: find('#room').on('keyup', inputChange)[0],
+    open: find('#open').on('click', openRoom)[0],
+    join: find('#join').on('click', joinRoom)[0],
+    toggle: find('#toggle').on('click', toggleState)[0]
+}
 
 function inputChange (ev) {
     if (ev.target.value) {
-        open.disabled = true;
-        join.disabled = false;
+        dom.open.disabled = true;
+        dom.join.disabled = false;
     } else {
-        join.disabled = true;
-        open.disabled = false;
+        dom.join.disabled = true;
+        dom.open.disabled = false;
     }
 }
 
@@ -38,7 +44,7 @@ function openRoom () {
 }
 
 function joinRoom () {
-    enter(roomid.value)(store.dispatch);
+    enter(dom.room.value)(store.dispatch);
 }
 
 function toggleState () {
@@ -54,18 +60,19 @@ function render () {
     const state = store.getState();
 
     document.body.style['background-color'] = state.boolean ? 'lightblue' : 'lightgreen';
-    data.innerHTML = [
+    dom.data.innerHTML = [
         '<h3>Redux State</h3>',
         '<pre>',
             JSON.stringify(state, removeStreams, 2),
         '</pre>'
     ].join('');
 
-    if (state.rtc.connection.token) roomid.value = state.rtc.connection.token
+    if (state.rtc.connection.token) dom.room.value = state.rtc.connection.token
 
-    const count = root.children.length;
-    state.rtc.connection.streams.slice(count).map(function (stream) {
-        root.appendChild(stream.mediaElement);
+    const count = dom.root.children.length;
+    state.rtc.connection.streams.slice(count)
+    .map(function (stream) {
+        dom.root.appendChild(stream.mediaElement);
         stream.mediaElement.play();
         setTimeout(function() {
             stream.mediaElement.play();
@@ -76,7 +83,9 @@ function render () {
 }
 
 function removeStreams (key, value) {
-    if (key === 'streams') return value.map(v => v.streamid);
+    if (key === 'streams') return value.map(function (v) {
+        return v.streamid;
+    });
     return value;
 }
 
