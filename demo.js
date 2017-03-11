@@ -1,5 +1,13 @@
-var { createStore, combineReducers } = window.Redux;
-var { reducer, actions, create, enter, dispatchAll } = window.ReduxRTC;
+var Redux = window.Redux;
+var createStore = Redux.createStore;
+var combineReducers = Redux.combineReducers;
+
+var ReduxRTC = window.ReduxRTC;
+var reducer = ReduxRTC.reducer;
+var actions = ReduxRTC.actions;
+var create = ReduxRTC.create;
+var enter = ReduxRTC.enter;
+var dispatchAll = ReduxRTC.dispatchAll;
 
 var setTrue = function () {
     return { type: 'SHARED_BOOLEAN_TRUE' }

@@ -4,7 +4,7 @@
   "description": "State integration and dispatchers across connectyed clients",
   "main": "./src/index.js",
   "scripts": {
-    "build": "rm -Rf ./dist && mkdir ./dist && browserify ./src/index.js --s ReduxRTC > ./dist/index.js",
+    "build": "rm -Rf ./dist && mkdir ./dist && browserify ./src/index.js -t [ babelify --presets [ env ] ] -s ReduxRTC > ./dist/index.js",
     "start": "npm run build && http-server -p 8000 -c-1",
     "test": "jest ./src"
   },
@@ -17,7 +17,12 @@
   "license": "ISC",
   "dependencies": {
     "redux": "^3.6.0",
-    "rp-utils": "^1.1.0",
+    "rp-utils": "^1.1.7",
     "whatwg-fetch": "^2.0.3"
+  },
+  "devDependencies": {
+    "babel-cli": "^6.23.0",
+    "babel-preset-env": "^1.2.1",
+    "babelify": "^7.3.0"
   }
 }

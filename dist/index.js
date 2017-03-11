@@ -503,7 +503,7 @@ function combineReducers(reducers) {
   };
 }
 }).call(this,require('_process'))
-},{"./createStore":15,"./utils/warning":17,"_process":34,"lodash/isPlainObject":10}],14:[function(require,module,exports){
+},{"./createStore":15,"./utils/warning":17,"_process":31,"lodash/isPlainObject":10}],14:[function(require,module,exports){
 "use strict";
 
 exports.__esModule = true;
@@ -804,7 +804,7 @@ function createStore(reducer, preloadedState, enhancer) {
     replaceReducer: replaceReducer
   }, _ref2[_symbolObservable2['default']] = observable, _ref2;
 }
-},{"lodash/isPlainObject":10,"symbol-observable":22}],16:[function(require,module,exports){
+},{"lodash/isPlainObject":10,"symbol-observable":19}],16:[function(require,module,exports){
 (function (process){
 'use strict';
 
@@ -853,7 +853,7 @@ exports.bindActionCreators = _bindActionCreators2['default'];
 exports.applyMiddleware = _applyMiddleware2['default'];
 exports.compose = _compose2['default'];
 }).call(this,require('_process'))
-},{"./applyMiddleware":11,"./bindActionCreators":12,"./combineReducers":13,"./compose":14,"./createStore":15,"./utils/warning":17,"_process":34}],17:[function(require,module,exports){
+},{"./applyMiddleware":11,"./bindActionCreators":12,"./combineReducers":13,"./compose":14,"./createStore":15,"./utils/warning":17,"_process":31}],17:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -880,11 +880,151 @@ function warning(message) {
   /* eslint-enable no-empty */
 }
 },{}],18:[function(require,module,exports){
-const { Nullable } = require('../flow');
+(function(e, a) { for(var i in a) e[i] = a[i]; }(exports, /******/ (function(modules) { // webpackBootstrap
+/******/ 	// The module cache
+/******/ 	var installedModules = {};
 
-function pluck (obj, path) {
-    return (path || '').split('.')
-    .reduce(function (p, c) {
+/******/ 	// The require function
+/******/ 	function __webpack_require__(moduleId) {
+
+/******/ 		// Check if module is in cache
+/******/ 		if(installedModules[moduleId])
+/******/ 			return installedModules[moduleId].exports;
+
+/******/ 		// Create a new module (and put it into the cache)
+/******/ 		var module = installedModules[moduleId] = {
+/******/ 			i: moduleId,
+/******/ 			l: false,
+/******/ 			exports: {}
+/******/ 		};
+
+/******/ 		// Execute the module function
+/******/ 		modules[moduleId].call(module.exports, module, module.exports, __webpack_require__);
+
+/******/ 		// Flag the module as loaded
+/******/ 		module.l = true;
+
+/******/ 		// Return the exports of the module
+/******/ 		return module.exports;
+/******/ 	}
+
+
+/******/ 	// expose the modules object (__webpack_modules__)
+/******/ 	__webpack_require__.m = modules;
+
+/******/ 	// expose the module cache
+/******/ 	__webpack_require__.c = installedModules;
+
+/******/ 	// identity function for calling harmony imports with the correct context
+/******/ 	__webpack_require__.i = function(value) { return value; };
+
+/******/ 	// define getter function for harmony exports
+/******/ 	__webpack_require__.d = function(exports, name, getter) {
+/******/ 		if(!__webpack_require__.o(exports, name)) {
+/******/ 			Object.defineProperty(exports, name, {
+/******/ 				configurable: false,
+/******/ 				enumerable: true,
+/******/ 				get: getter
+/******/ 			});
+/******/ 		}
+/******/ 	};
+
+/******/ 	// getDefaultExport function for compatibility with non-harmony modules
+/******/ 	__webpack_require__.n = function(module) {
+/******/ 		var getter = module && module.__esModule ?
+/******/ 			function getDefault() { return module['default']; } :
+/******/ 			function getModuleExports() { return module; };
+/******/ 		__webpack_require__.d(getter, 'a', getter);
+/******/ 		return getter;
+/******/ 	};
+
+/******/ 	// Object.prototype.hasOwnProperty.call
+/******/ 	__webpack_require__.o = function(object, property) { return Object.prototype.hasOwnProperty.call(object, property); };
+
+/******/ 	// __webpack_public_path__
+/******/ 	__webpack_require__.p = "";
+
+/******/ 	// Load entry module and return exports
+/******/ 	return __webpack_require__(__webpack_require__.s = 3);
+/******/ })
+/************************************************************************/
+/******/ ([
+/* 0 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var Flow = function Flow(x) {
+  return {
+    map: function map(f) {
+      return Flow(f(x));
+    },
+    fold: function fold(f) {
+      return f(x);
+    },
+    chain: function chain(f) {
+      return f(x);
+    }
+  };
+};
+
+var Right = function Right(x) {
+  return {
+    map: function map(f) {
+      return Right(f(x));
+    },
+    fold: function fold(f, g) {
+      return g(x);
+    },
+    chain: function chain(f) {
+      return f(x);
+    }
+  };
+};
+
+var Left = function Left(x) {
+  return {
+    map: function map(f) {
+      return Left(x);
+    },
+    fold: function fold(f, g) {
+      return f(x);
+    },
+    chain: function chain(f) {
+      return f(x);
+    }
+  };
+};
+
+var Nullable = function Nullable(x) {
+  return x != null ? Right(x) : Left(x);
+};
+
+var Safely = function Safely(f) {
+  try {
+    return Right(f());
+  } catch (e) {
+    return Left(e);
+  }
+};
+
+module.exports = {
+  Flow: Flow, Left: Left, Right: Right, Nullable: Nullable, Safely: Safely
+};
+
+/***/ }),
+/* 1 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var _require = __webpack_require__(0),
+    Nullable = _require.Nullable;
+
+function pluck(obj, path) {
+    return (path || '').split('.').reduce(function (p, c) {
         if (!p || !p[c]) return null;
         return p[c];
     }, obj);
@@ -892,70 +1032,50 @@ function pluck (obj, path) {
 
 pluck.flow = function () {
     return Nullable(pluck.apply(null, arguments));
-}
+};
 
 Object.pluck = pluck;
 
 module.exports = pluck;
-},{"../flow":20}],19:[function(require,module,exports){
-function replaceAll (rxp, str) {
+
+/***/ }),
+/* 2 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+function replaceAll(rxp, str) {
     return this.replace(new RegExp(rxp, 'g'), str);
 }
 
 String.prototype.replaceAll = replaceAll;
 
-
 module.exports = replaceAll;
-},{}],20:[function(require,module,exports){
-const Flow = x => ({
-    map: f => Flow(f(x)),
-    fold: f => f(x),
-    chain: f => f(x)
-})
 
-const Right = x => ({
-  map: f => Right(f(x)),
-  fold: (f, g) => g(x),
-  chain: f => f(x)
-})
+/***/ }),
+/* 3 */
+/***/ (function(module, exports, __webpack_require__) {
 
-const Left = x => ({
-  map: f => Left(x),
-  fold: (f, g) => f(x),
-  chain: f => f(x)
-})
+"use strict";
 
-const Nullable = x => 
-    x != null ? Right(x) : Left(x)
 
-const Safely = f => {
-  try {
-    return Right(f())
-  } catch (e) {
-    return Left(e)
-  }
-}
-
-module.exports = {
-    Flow, Left, Right, Nullable, Safely 
-}
-},{}],21:[function(require,module,exports){
-const rpUtils = {};
-
-// FLOW HELPERS
-rpUtils.flow = require('./flow');
+var rpUtils = {};
 
 // STRING HELPERS
-require('./String/replaceAll');
+__webpack_require__(2);
 
-// OBJECT HELPERS
-rpUtils.pluck = require('./Object/pluck');
+module.exports = {
+    flow: __webpack_require__(0),
+    pluck: __webpack_require__(1)
+};
 
-module.exports = rpUtils;
-},{"./Object/pluck":18,"./String/replaceAll":19,"./flow":20}],22:[function(require,module,exports){
+/***/ })
+/******/ ])));
+},{}],19:[function(require,module,exports){
 module.exports = require('./lib/index');
 
-},{"./lib/index":23}],23:[function(require,module,exports){
+},{"./lib/index":20}],20:[function(require,module,exports){
 (function (global){
 'use strict';
 
@@ -987,7 +1107,7 @@ if (typeof self !== 'undefined') {
 var result = (0, _ponyfill2['default'])(root);
 exports['default'] = result;
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./ponyfill":24}],24:[function(require,module,exports){
+},{"./ponyfill":21}],21:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -1011,7 +1131,7 @@ function symbolObservablePonyfill(root) {
 
 	return result;
 };
-},{}],25:[function(require,module,exports){
+},{}],22:[function(require,module,exports){
 (function(self) {
   'use strict';
 
@@ -1474,38 +1594,49 @@ function symbolObservablePonyfill(root) {
   self.fetch.polyfill = true
 })(typeof self !== 'undefined' ? self : this);
 
-},{}],26:[function(require,module,exports){
-const buildAction = type => payload => ({
-    type, payload
-});
+},{}],23:[function(require,module,exports){
+'use strict';
 
-const convertToXctbl = obj => {
+var buildAction = function buildAction(type) {
+    return function (payload) {
+        return {
+            type: type, payload: payload
+        };
+    };
+};
+
+var convertToXctbl = function convertToXctbl(obj) {
     obj.create = buildAction(obj.CREATE);
     obj.loading = buildAction(obj.LOADING);
     obj.reaction = buildAction(obj.REACTION);
     obj.error = buildAction(obj.ERROR);
     return obj;
-}
+};
 
-const connection = {
+var connection = {
     CREATE: 'CREATE_CONNECTION',
     LOADING: 'LOADING_CONNECTION',
     REACTION: 'JOIN_CONNECTION',
     ERROR: 'ERROR_CONNECTION'
-}
+};
 
 module.exports = {
     connection: convertToXctbl(connection)
-}
-},{}],27:[function(require,module,exports){
-const init = require('./init');
-const { flow } = require('rp-utils');
+};
 
-const permissions = {
+},{}],24:[function(require,module,exports){
+'use strict';
+
+var init = require('./init');
+
+var _require = require('rp-utils'),
+    flow = _require.flow;
+
+var permissions = {
     audio: true,
     video: true,
     data: true
-}
+};
 
 /**
  * 
@@ -1525,246 +1656,322 @@ const permissions = {
  *  When resolved will be an open RTC connection
  */
 
-module.exports = (sessionDescription, options) => init.then(RTC => new Promise((res, rej) => {
-    const connection = new RTC();
-    connection.enableFileSharing = true; 
-    connection.session = permissions;
+module.exports = function (sessionDescription, options) {
+    return init.then(function (RTC) {
+        return new Promise(function (res, rej) {
+            var connection = new RTC();
+            connection.enableFileSharing = true;
+            connection.session = permissions;
 
-    connection.sdpConstraints.mandatory = {
-        OfferToReceiveAudio: true,
-        OfferToReceiveVideo: true
-    };
+            connection.sdpConstraints.mandatory = {
+                OfferToReceiveAudio: true,
+                OfferToReceiveVideo: true
+            };
 
-    if (options.onstream) connection.onstream = options.onstream;
+            if (options.onstream) connection.onstream = options.onstream;
 
-    if (!sessionDescription) {
-        connection.channel = connection.token();
-        connection.open({
-            sessionid: connection.sessionid,
-            onMediaCaptured: () => res(connection)
-        })
-    } else {
-        connection.channel = sessionDescription.channel;
-        connection.join(sessionDescription, permissions);
-        res(connection);
-    }
-}))
-},{"./init":28,"rp-utils":21}],28:[function(require,module,exports){
-const { flow } = require('rp-utils');
+            if (!sessionDescription) {
+                connection.channel = connection.token();
+                connection.open({
+                    sessionid: connection.sessionid,
+                    onMediaCaptured: function onMediaCaptured() {
+                        return res(connection);
+                    }
+                });
+            } else {
+                connection.channel = sessionDescription.channel;
+                connection.join(sessionDescription, permissions);
+                res(connection);
+            }
+        });
+    });
+};
 
-const SCRIPT_URL = 'https://cdn.webrtc-experiment.com/RTCMultiConnection.js';
+},{"./init":25,"rp-utils":18}],25:[function(require,module,exports){
+'use strict';
 
-let RTC;
+var _require = require('rp-utils'),
+    flow = _require.flow;
 
-module.exports = new Promise((res, rej) => {
+var SCRIPT_URL = 'https://cdn.webrtc-experiment.com/RTCMultiConnection.js';
+
+var RTC = void 0;
+
+module.exports = new Promise(function (res, rej) {
     if (window.RTCMultiConnection) RTC = window.RTCMultiConnection;
 
     if (RTC) return res(RTC);
 
-    flow.Safely(() => {
-        const script = document.createElement('script');
+    flow.Safely(function () {
+        var script = document.createElement('script');
         document.body.appendChild(script);
         return script;
-    })
-    .map(script => {
+    }).map(function (script) {
         script.src = SCRIPT_URL;
         script.onerror = rej;
-        script.onload = () => {
+        script.onload = function () {
             RTC = window.RTCMultiConnection;
             if (RTC) return res(RTC);
             rej(null);
-        }
-    })
-    .fold(err => rej(err), () => {
+        };
+    }).fold(function (err) {
+        return rej(err);
+    }, function () {
         //NO OP - RESOLVED ASYNC ABOVE
     });
 });
-},{"rp-utils":21}],29:[function(require,module,exports){
-const connect = require('./connect');
-const { onunload } = require('../utils/browser');
 
-const ROOM_URL = id => `https://redux-rtc.firebaseio.com/rooms/${id}.json`;
+},{"rp-utils":18}],26:[function(require,module,exports){
+'use strict';
 
-const createRoom = (_, onstream) => 
-    connect(null, {
-        onstream
-    })
-    .then(connection => {
-        const { sessionDescription } = connection;
+var connect = require('./connect');
 
-        onunload(() => deleteRoom(connection.channel));
+var _require = require('../utils/browser'),
+    onunload = _require.onunload;
 
-        return saveRoom(connection.channel, sessionDescription)
-        .then(() => connection);
+var ROOM_URL = function ROOM_URL(id) {
+    return 'https://redux-rtc.firebaseio.com/rooms/' + id + '.json';
+};
+
+var createRoom = function createRoom(_, onstream) {
+    return connect(null, {
+        onstream: onstream
+    }).then(function (connection) {
+        var sessionDescription = connection.sessionDescription;
+
+
+        onunload(function () {
+            return deleteRoom(connection.channel);
+        });
+
+        return saveRoom(connection.channel, sessionDescription).then(function () {
+            return connection;
+        });
     });
+};
 
-const enterRoom = (id, onstream) =>
-    findRoom(id)
-    .then((description) => {
+var enterRoom = function enterRoom(id, onstream) {
+    return findRoom(id).then(function (description) {
         if (!description || !description.userid) return Promise.reject('No Room Found');
         return description;
-    })
-    .then(description => connect(description, {
-        onstream
-    }));
+    }).then(function (description) {
+        return connect(description, {
+            onstream: onstream
+        });
+    });
+};
 
-const saveRoom = (id, description) => {
+var saveRoom = function saveRoom(id, description) {
     description.channel = id;
     return fetch(ROOM_URL(id), {
         method: 'POST',
         body: JSON.stringify(description)
-    })
-    .then(res => res.json())
-}
+    }).then(function (res) {
+        return res.json();
+    });
+};
 
-const findRoom = (id) =>
-    fetch(ROOM_URL(id))
-    .then(res => res.json())
-    .then(res => {
+var findRoom = function findRoom(id) {
+    return fetch(ROOM_URL(id)).then(function (res) {
+        return res.json();
+    }).then(function (res) {
         if (!res) return Promise.reject('No Room Found');
         return res[Object.keys(res)[0]];
-    })
+    });
+};
 
-const deleteRoom = (id) => {
+var deleteRoom = function deleteRoom(id) {
     // Use XMLHttpRequest for unload reliability
     var client = new XMLHttpRequest();
     client.open("DELETE", ROOM_URL(id), false);
     client.setRequestHeader("Content-Type", "text/plain;charset=UTF-8");
     client.send();
-}
+};
 
 module.exports = {
-    createRoom,
-    enterRoom,
-    deleteRoom
-}
-},{"../utils/browser":33,"./connect":27}],30:[function(require,module,exports){
+    createRoom: createRoom,
+    enterRoom: enterRoom,
+    deleteRoom: deleteRoom
+};
+
+},{"../utils/browser":30,"./connect":24}],27:[function(require,module,exports){
+'use strict';
+
 require('whatwg-fetch');
 
-const reducer = require('./reducer');
-const actions = require('./actions');
-const { create, enter, dispatchAll } = require('./thunks');
+var reducer = require('./reducer');
+var actions = require('./actions');
+
+var _require = require('./thunks'),
+    create = _require.create,
+    enter = _require.enter,
+    dispatchAll = _require.dispatchAll;
 
 module.exports = {
-    reducer,
-    actions,
-    create,
-    enter,
-    dispatchAll
-}
-},{"./actions":26,"./reducer":31,"./thunks":32,"whatwg-fetch":25}],31:[function(require,module,exports){
-const { combineReducers } = require('redux');
-const { pluck } = require('rp-utils');
-const actions = require('./actions');
+    reducer: reducer,
+    actions: actions,
+    create: create,
+    enter: enter,
+    dispatchAll: dispatchAll
+};
 
-const pluckErr = payload => 
-    pluck(payload, 'error.message') || pluck(payload, 'error') || null
+},{"./actions":23,"./reducer":28,"./thunks":29,"whatwg-fetch":22}],28:[function(require,module,exports){
+'use strict';
 
-const connectionState = payload => ({
-    token: pluck(payload, 'token') || null,
-    streams: pluck(payload, 'streams') || [],
-    loading: pluck(payload, 'loading') || false,
-    error: pluckErr(payload)
-});
+function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
 
-const connection = (state=connectionState(), action) => {
-    const types = actions.connection;
+var _require = require('redux'),
+    combineReducers = _require.combineReducers;
+
+var _require2 = require('rp-utils'),
+    pluck = _require2.pluck;
+
+var actions = require('./actions');
+
+var pluckErr = function pluckErr(payload) {
+    return pluck(payload, 'error.message') || pluck(payload, 'error') || null;
+};
+
+var connectionState = function connectionState(payload) {
+    return {
+        token: pluck(payload, 'token') || null,
+        streams: pluck(payload, 'streams') || [],
+        loading: pluck(payload, 'loading') || false,
+        error: pluckErr(payload)
+    };
+};
+
+var connection = function connection() {
+    var state = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : connectionState();
+    var action = arguments[1];
+
+    var types = actions.connection;
     switch (action.type) {
-        case types.LOADING: return connectionState({
-            loading: true
-        });
-        case types.CREATE: return connectionState({
-            token: action.payload,
-            streams: state.streams
-        });
-        case types.REACTION: return connectionState({
-            token: state.token,
-            streams: [...state.streams, action.payload]
-        });
-        case types.ERROR: return connectionState({
-            error: action.payload
-        });
-        default: return state;
+        case types.LOADING:
+            return connectionState({
+                loading: true
+            });
+        case types.CREATE:
+            return connectionState({
+                token: action.payload,
+                streams: state.streams
+            });
+        case types.REACTION:
+            return connectionState({
+                token: state.token,
+                streams: [].concat(_toConsumableArray(state.streams), [action.payload])
+            });
+        case types.ERROR:
+            return connectionState({
+                error: action.payload
+            });
+        default:
+            return state;
     }
-}
+};
 
 module.exports = combineReducers({
-    connection
-})
-},{"./actions":26,"redux":16,"rp-utils":21}],32:[function(require,module,exports){
-const { connection, message } = require('./actions');
-const { createRoom, enterRoom } = require('./connect/rooms');
+    connection: connection
+});
 
-let connected;
-let queued = [];
+},{"./actions":23,"redux":16,"rp-utils":18}],29:[function(require,module,exports){
+'use strict';
 
-const create = (payload) => {
-    return (dispatch) => {
-        const onstream = e => dispatch(connection.reaction(e));
+function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
+
+var _require = require('./actions'),
+    connection = _require.connection,
+    message = _require.message;
+
+var _require2 = require('./connect/rooms'),
+    createRoom = _require2.createRoom,
+    enterRoom = _require2.enterRoom;
+
+var connected = void 0;
+var queued = [];
+
+var create = function create(payload) {
+    return function (dispatch) {
+        var onstream = function onstream(e) {
+            return dispatch(connection.reaction(e));
+        };
 
         dispatch(connection.loading());
 
-        createRoom(payload, onstream)
-        .then(conn => {
+        createRoom(payload, onstream).then(function (conn) {
             // Use conn.send to dispatch to peers
             connected = conn;
-            conn.onmessage = (e) => dispatch(e.data);
+            conn.onmessage = function (e) {
+                return dispatch(e.data);
+            };
             dispatch(connection.create(conn.channel));
-        })
-        .catch(err => {
+        }).catch(function (err) {
             dispatch(connection.error(err));
         });
-    }
-}
+    };
+};
 
-const enter = (payload) => {
-    return (dispatch) => {
-        const onstream = e => dispatch(connection.reaction(e));
+var enter = function enter(payload) {
+    return function (dispatch) {
+        var onstream = function onstream(e) {
+            return dispatch(connection.reaction(e));
+        };
 
         dispatch(connection.loading());
 
-        enterRoom(payload, onstream)
-        .then(conn => {
+        enterRoom(payload, onstream).then(function (conn) {
             connected = conn;
-            conn.onmessage = (e) => dispatch(e.data);
+            conn.onmessage = function (e) {
+                return dispatch(e.data);
+            };
             dispatch(connection.create(conn.channel));
-        })
-        .catch(err => {
+        }).catch(function (err) {
             dispatch(connection.error(err));
         });
-    }
-}
+    };
+};
 
-const dispatchAll = (action) => {
-    return (dispatch) => {
+var dispatchAll = function dispatchAll(action) {
+    return function (dispatch) {
         dispatch(action);
 
-        queued = [...queued, action];
+        queued = [].concat(_toConsumableArray(queued), [action]);
 
         if (!connected || connected.numberOfConnectedUsers <= 0) return;
-        
+
         console.log("DISPATCHING TO PEERS", queued);
-        queued.map(a => connected.send(a));
+        queued.map(function (a) {
+            return connected.send(a);
+        });
         queued = [];
-    }
-}
+    };
+};
 
 module.exports = {
-    create,
-    enter,
-    dispatchAll
-}
-},{"./actions":26,"./connect/rooms":29}],33:[function(require,module,exports){
-const { flow } = require('rp-utils');
+    create: create,
+    enter: enter,
+    dispatchAll: dispatchAll
+};
 
-const onunload = (fn) => 
-    flow.Safely(() => window.addEventListener('unload', fn))
-    .fold((e) => console.log(e),() => {});
+},{"./actions":23,"./connect/rooms":26}],30:[function(require,module,exports){
+'use strict';
+
+var _require = require('rp-utils'),
+    flow = _require.flow;
+
+var onunload = function onunload(fn) {
+    return flow.Safely(function () {
+        return window.addEventListener('unload', fn);
+    }).fold(function (e) {
+        return console.log(e);
+    }, function () {});
+};
 
 module.exports = {
-    onunload
-}
-},{"rp-utils":21}],34:[function(require,module,exports){
+    onunload: onunload
+};
+
+},{"rp-utils":18}],31:[function(require,module,exports){
 // shim for using process in browser
 var process = module.exports = {};
 
@@ -1946,5 +2153,5 @@ process.chdir = function (dir) {
 };
 process.umask = function() { return 0; };
 
-},{}]},{},[30])(30)
+},{}]},{},[27])(27)
 });
