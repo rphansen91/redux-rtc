@@ -1,4 +1,5 @@
 const path = require('path');
+const webpack = require('webpack');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 
 const IS_PROD = process.env.NODE_ENV === 'production' ? true : false;
@@ -14,7 +15,13 @@ const config = {
         libraryTarget: "commonjs",
         publicPath: PUBLIC_PATH
     },
-    plugins: [],
+    plugins: [
+        new webpack.DefinePlugin({
+            'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV),
+            'process.env.IS_DEMO': JSON.stringify(process.env.IS_DEMO),
+            'process.env.TEST': process.env.TEST
+        })
+    ],
     module: {
         loaders: [
             {   

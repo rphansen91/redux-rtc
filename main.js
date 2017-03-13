@@ -63,7 +63,7 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 10);
+/******/ 	return __webpack_require__(__webpack_require__.s = 11);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -304,6 +304,69 @@ module.exports = {
 "use strict";
 
 
+var _require = __webpack_require__(1),
+    connection = _require.connection;
+
+var _require2 = __webpack_require__(8),
+    createRoom = _require2.createRoom,
+    enterRoom = _require2.enterRoom;
+
+var create = function create(payload) {
+    return function (dispatch) {
+        var onstream = function onstream(e) {
+            return dispatch(connection.reaction(e));
+        };
+
+        dispatch(connection.loading());
+
+        return createRoom(payload, onstream).then(function (room) {
+            room.onmessage = function (e) {
+                return dispatch(e.data);
+            };
+            dispatch(connection.create({
+                token: room.channel,
+                room: room
+            }));
+        }).catch(function (err) {
+            dispatch(connection.error(err));
+        });
+    };
+};
+
+var enter = function enter(payload) {
+    return function (dispatch) {
+        var onstream = function onstream(e) {
+            return dispatch(connection.reaction(e));
+        };
+
+        dispatch(connection.loading());
+
+        return enterRoom(payload, onstream).then(function (room) {
+            room.onmessage = function (e) {
+                return dispatch(e.data);
+            };
+            dispatch(connection.create({
+                token: room.channel,
+                room: room
+            }));
+        }).catch(function (err) {
+            dispatch(connection.error(err));
+        });
+    };
+};
+
+module.exports = {
+    create: create,
+    enter: enter
+};
+
+/***/ }),
+/* 3 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
 function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
 
 var _require = __webpack_require__(0),
@@ -324,13 +387,16 @@ var connected = function connected(_ref) {
                 queued = [].concat(_toConsumableArray(queued), [action]);
 
                 var state = getState();
+
                 if (!state.rtc) {
                     console.warn("The Redux RTC reducer must be added to state as 'rtc'");
                 }
 
                 var room = pluck(state, 'rtc.room');
                 if (room && room.numberOfConnectedUsers > 0) {
-                    queued.map(room.send);
+                    queued.map(function (a) {
+                        return room.send(a);
+                    });
                     queued = [];
                 } else {
                     console.warn("No room found, saving action");
@@ -345,7 +411,7 @@ var connected = function connected(_ref) {
 module.exports = connected;
 
 /***/ }),
-/* 3 */
+/* 4 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -429,91 +495,6 @@ var connection = function connection() {
 };
 
 module.exports = connection;
-
-/***/ }),
-/* 4 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-var _require = __webpack_require__(1),
-    connection = _require.connection;
-
-var _require2 = __webpack_require__(8),
-    createRoom = _require2.createRoom,
-    enterRoom = _require2.enterRoom;
-
-/**
- * Create RTC Connection
- * 
- * @example
- * 
- * import { create } from 'redux-rtc';
- * 
- * dispatch(create());
- * 
- */
-
-var create = function create(payload) {
-    return function (dispatch) {
-        var onstream = function onstream(e) {
-            return dispatch(connection.reaction(e));
-        };
-
-        dispatch(connection.loading());
-
-        createRoom(payload, onstream).then(function (room) {
-            room.onmessage = function (e) {
-                return dispatch(e.data);
-            };
-            dispatch(connection.create({
-                token: room.channel,
-                room: room
-            }));
-        }).catch(function (err) {
-            dispatch(connection.error(err));
-        });
-    };
-};
-
-/**
- * Join Open RTC Connection
- * 
- * @example
- * 
- * import { enter } from 'redux-rtc';
- * 
- * dispatch(enter({@link Connection#token}));
- * 
- */
-
-var enter = function enter(payload) {
-    return function (dispatch) {
-        var onstream = function onstream(e) {
-            return dispatch(connection.reaction(e));
-        };
-
-        dispatch(connection.loading());
-
-        enterRoom(payload, onstream).then(function (room) {
-            room.onmessage = function (e) {
-                return dispatch(e.data);
-            };
-            dispatch(connection.create({
-                token: room.channel,
-                room: room
-            }));
-        }).catch(function (err) {
-            dispatch(connection.error(err));
-        });
-    };
-};
-
-module.exports = {
-    create: create,
-    enter: enter
-};
 
 /***/ }),
 /* 5 */
@@ -987,7 +968,11 @@ module.exports = {
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
+/* WEBPACK VAR INJECTION */(function(process) {
 
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 var init = __webpack_require__(7);
 
@@ -1000,28 +985,53 @@ var permissions = {
     data: true
 };
 
-/**
- * 
- * Connect Web RTC Helpers
- * @constructor
- * 
- * @param {string} sessionDescription
- *  The session that was saved by room creater and retrieved by peer
- *  e.g. sessionDescriptiom is the only saved data
- * 
- * @param {object} options
- *  Key Event lifecycle hooks
- *     - onstream
- *     - onunload
- *  
- * @returns {Promise} 
- *  When resolved will be an open RTC connection
- */
+if (undefined) {
+    var MockRTC = function () {
+        function MockRTC() {
+            _classCallCheck(this, MockRTC);
+
+            this.channel = process.env.TEST_ROOM_NAME;
+            this.sdpConstraints = {};
+            this.caniuse = {};
+            this.caniuse.RTCPeerConnection = process.env.RTC_SUPPORTED === 'true' ? true : false;
+            this.sessionDescription = {
+                sessionid: this.channel,
+                userid: this.channel
+            };
+        }
+
+        _createClass(MockRTC, [{
+            key: 'token',
+            value: function token() {
+                return this.channel;
+            }
+        }, {
+            key: 'open',
+            value: function open(opts) {
+                var onMediaCaptured = opts.onMediaCaptured;
+
+                onMediaCaptured();
+            }
+        }, {
+            key: 'join',
+            value: function join() {}
+        }]);
+
+        return MockRTC;
+    }();
+
+    var _init = init;
+    init = _init.then(function () {
+        return MockRTC;
+    });
+}
 
 var Connect = function Connect(sessionDescription, options) {
     return init.then(function (RTC) {
         return new Promise(function (res, rej) {
             var connection = new RTC();
+            if (!connection.caniuse.RTCPeerConnection) return rej({ message: 'RTC not available' });
+
             connection.enableFileSharing = true;
             connection.session = permissions;
 
@@ -1050,6 +1060,7 @@ var Connect = function Connect(sessionDescription, options) {
 };
 
 module.exports = Connect;
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(10)))
 
 /***/ }),
 /* 7 */
@@ -1163,7 +1174,9 @@ var deleteRoom = function deleteRoom(id) {
 module.exports = {
     createRoom: createRoom,
     enterRoom: enterRoom,
-    deleteRoom: deleteRoom
+    deleteRoom: deleteRoom,
+    saveRoom: saveRoom,
+    findRoom: findRoom
 };
 
 /***/ }),
@@ -1190,6 +1203,192 @@ module.exports = {
 
 /***/ }),
 /* 10 */
+/***/ (function(module, exports) {
+
+// shim for using process in browser
+var process = module.exports = {};
+
+// cached from whatever global is present so that test runners that stub it
+// don't break things.  But we need to wrap it in a try catch in case it is
+// wrapped in strict mode code which doesn't define any globals.  It's inside a
+// function because try/catches deoptimize in certain engines.
+
+var cachedSetTimeout;
+var cachedClearTimeout;
+
+function defaultSetTimout() {
+    throw new Error('setTimeout has not been defined');
+}
+function defaultClearTimeout () {
+    throw new Error('clearTimeout has not been defined');
+}
+(function () {
+    try {
+        if (typeof setTimeout === 'function') {
+            cachedSetTimeout = setTimeout;
+        } else {
+            cachedSetTimeout = defaultSetTimout;
+        }
+    } catch (e) {
+        cachedSetTimeout = defaultSetTimout;
+    }
+    try {
+        if (typeof clearTimeout === 'function') {
+            cachedClearTimeout = clearTimeout;
+        } else {
+            cachedClearTimeout = defaultClearTimeout;
+        }
+    } catch (e) {
+        cachedClearTimeout = defaultClearTimeout;
+    }
+} ())
+function runTimeout(fun) {
+    if (cachedSetTimeout === setTimeout) {
+        //normal enviroments in sane situations
+        return setTimeout(fun, 0);
+    }
+    // if setTimeout wasn't available but was latter defined
+    if ((cachedSetTimeout === defaultSetTimout || !cachedSetTimeout) && setTimeout) {
+        cachedSetTimeout = setTimeout;
+        return setTimeout(fun, 0);
+    }
+    try {
+        // when when somebody has screwed with setTimeout but no I.E. maddness
+        return cachedSetTimeout(fun, 0);
+    } catch(e){
+        try {
+            // When we are in I.E. but the script has been evaled so I.E. doesn't trust the global object when called normally
+            return cachedSetTimeout.call(null, fun, 0);
+        } catch(e){
+            // same as above but when it's a version of I.E. that must have the global object for 'this', hopfully our context correct otherwise it will throw a global error
+            return cachedSetTimeout.call(this, fun, 0);
+        }
+    }
+
+
+}
+function runClearTimeout(marker) {
+    if (cachedClearTimeout === clearTimeout) {
+        //normal enviroments in sane situations
+        return clearTimeout(marker);
+    }
+    // if clearTimeout wasn't available but was latter defined
+    if ((cachedClearTimeout === defaultClearTimeout || !cachedClearTimeout) && clearTimeout) {
+        cachedClearTimeout = clearTimeout;
+        return clearTimeout(marker);
+    }
+    try {
+        // when when somebody has screwed with setTimeout but no I.E. maddness
+        return cachedClearTimeout(marker);
+    } catch (e){
+        try {
+            // When we are in I.E. but the script has been evaled so I.E. doesn't  trust the global object when called normally
+            return cachedClearTimeout.call(null, marker);
+        } catch (e){
+            // same as above but when it's a version of I.E. that must have the global object for 'this', hopfully our context correct otherwise it will throw a global error.
+            // Some versions of I.E. have different rules for clearTimeout vs setTimeout
+            return cachedClearTimeout.call(this, marker);
+        }
+    }
+
+
+
+}
+var queue = [];
+var draining = false;
+var currentQueue;
+var queueIndex = -1;
+
+function cleanUpNextTick() {
+    if (!draining || !currentQueue) {
+        return;
+    }
+    draining = false;
+    if (currentQueue.length) {
+        queue = currentQueue.concat(queue);
+    } else {
+        queueIndex = -1;
+    }
+    if (queue.length) {
+        drainQueue();
+    }
+}
+
+function drainQueue() {
+    if (draining) {
+        return;
+    }
+    var timeout = runTimeout(cleanUpNextTick);
+    draining = true;
+
+    var len = queue.length;
+    while(len) {
+        currentQueue = queue;
+        queue = [];
+        while (++queueIndex < len) {
+            if (currentQueue) {
+                currentQueue[queueIndex].run();
+            }
+        }
+        queueIndex = -1;
+        len = queue.length;
+    }
+    currentQueue = null;
+    draining = false;
+    runClearTimeout(timeout);
+}
+
+process.nextTick = function (fun) {
+    var args = new Array(arguments.length - 1);
+    if (arguments.length > 1) {
+        for (var i = 1; i < arguments.length; i++) {
+            args[i - 1] = arguments[i];
+        }
+    }
+    queue.push(new Item(fun, args));
+    if (queue.length === 1 && !draining) {
+        runTimeout(drainQueue);
+    }
+};
+
+// v8 likes predictible objects
+function Item(fun, array) {
+    this.fun = fun;
+    this.array = array;
+}
+Item.prototype.run = function () {
+    this.fun.apply(null, this.array);
+};
+process.title = 'browser';
+process.browser = true;
+process.env = {};
+process.argv = [];
+process.version = ''; // empty string to avoid regexp issues
+process.versions = {};
+
+function noop() {}
+
+process.on = noop;
+process.addListener = noop;
+process.once = noop;
+process.off = noop;
+process.removeListener = noop;
+process.removeAllListeners = noop;
+process.emit = noop;
+
+process.binding = function (name) {
+    throw new Error('process.binding is not supported');
+};
+
+process.cwd = function () { return '/' };
+process.chdir = function (dir) {
+    throw new Error('process.chdir is not supported');
+};
+process.umask = function() { return 0; };
+
+
+/***/ }),
+/* 11 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1197,10 +1396,10 @@ module.exports = {
 
 __webpack_require__(5);
 
-var connected = __webpack_require__(2);
-var rtc = __webpack_require__(3);
+var connected = __webpack_require__(3);
+var rtc = __webpack_require__(4);
 
-var _require = __webpack_require__(4),
+var _require = __webpack_require__(2),
     create = _require.create,
     enter = _require.enter;
 

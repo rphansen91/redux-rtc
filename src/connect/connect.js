@@ -1,4 +1,4 @@
-const init = require('./init');
+let init = require('./init');
 const { flow } = require('rp-utils');
 
 const permissions = {
@@ -7,8 +7,37 @@ const permissions = {
     data: true
 }
 
+if (process.env.TEST) {
+    class MockRTC {
+        constructor () {
+            this.channel = process.env.TEST_ROOM_NAME;
+            this.sdpConstraints = {}
+            this.caniuse = {}
+            this.caniuse.RTCPeerConnection = process.env.RTC_SUPPORTED === 'true' ? true : false;
+            this.sessionDescription = {
+                sessionid: this.channel,
+                userid: this.channel
+            }
+        }
+        token () {
+            return this.channel;
+        }
+        open (opts) {
+            const { onMediaCaptured } = opts;
+            onMediaCaptured();
+        }
+        join () {
+
+        }
+    }
+    const _init = init;
+    init = _init.then(() => MockRTC)
+}
+
 const Connect = (sessionDescription, options) => init.then(RTC => new Promise((res, rej) => {
     const connection = new RTC();
+    if (!connection.caniuse.RTCPeerConnection) return rej({ message: 'RTC not available' });
+
     connection.enableFileSharing = true; 
     connection.session = permissions;
 
@@ -30,6 +59,6 @@ const Connect = (sessionDescription, options) => init.then(RTC => new Promise((r
         connection.join(sessionDescription, permissions);
         res(connection);
     }
-}))
+}));
 
 module.exports = Connect;

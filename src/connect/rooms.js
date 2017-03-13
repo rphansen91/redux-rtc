@@ -54,5 +54,7 @@ const deleteRoom = (id) => {
 module.exports = {
     createRoom,
     enterRoom,
-    deleteRoom
+    deleteRoom,
+    saveRoom,
+    findRoom
 }

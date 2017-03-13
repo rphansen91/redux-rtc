@@ -6,7 +6,7 @@
   "scripts": {
     "build": "NODE_ENV=production IS_DEMO=demo webpack && webpack",
     "start": "IS_DEMO=demo webpack && http-server -p 8000 -c-1",
-    "test": "jest ./src",
+    "test": "TEST=true jest ./src",
     "test:cov": "npm run test && codecov --token=9437db3b-3c3c-44cc-b6c7-990095c82908"
   },
   "keywords": [

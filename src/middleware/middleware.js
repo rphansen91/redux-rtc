@@ -11,13 +11,14 @@ const connected = ({ dispatch, getState }) => next => action => {
         queued = [...queued, action];
 
         const state = getState();
+
         if (!state.rtc) {
             console.warn("The Redux RTC reducer must be added to state as 'rtc'");
         }
 
         const room = pluck(state, 'rtc.room');
         if (room && room.numberOfConnectedUsers > 0) {
-            queued.map(room.send);
+            queued.map((a) => room.send(a));
             queued = [];
         } else {
             console.warn("No room found, saving action");
