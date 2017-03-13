@@ -77,17 +77,22 @@ store.dispatch(enter(ROOM_TOKEN))
 ```
 
 State
--------
+-----
 
 ```js
 const { rtc } = store.getState()
 ```
-@type {object}
-@property {string} token - The unique id of the connection
-@property {object} room - The room instance [RTCMultiConnection](http://www.rtcmulticonnection.org/docs/)
-@property {Array} streams - All of the connected media elements
-@property {boolean} loading - The loading status of the room
-@property {string} error - Errors will propagate here
+
+# RTC
+The current state of the ReduxRTC connection
+
+## Properties
+
+- token: (string) - The unique identifier for the connection
+- room: (object, required) - The room instance [RTCMultiConnection](http://www.rtcmulticonnection.org/docs/)
+- streams: (array[VideoElement]) - All of the connected media elements
+- loading: false (boolean) - The loading status of the room
+- error: 'No Room Found' (string) - Errors will propagate here
 
 Dispatch
 --------
