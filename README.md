@@ -2,7 +2,7 @@
 
 Peer2Peer connected states using Redux and WebRTC
 
-[![Demo](https://rphansen91.github.io/redux-rtc/usage.gif)](https://rphansen91.github.io/redux-rtc/)
+[![Demo](https://rphansen91.github.io/redux-rtc/dist/usage.gif)](https://rphansen91.github.io/redux-rtc/)
 
 [Github](https://github.com/rphansen91/redux-rtc)
 [Demo](https://rphansen91.github.io/redux-rtc/)
@@ -73,10 +73,10 @@ store.dispatch(enter(ROOM_TOKEN))
 const { rtc } = store.getState()
 ```
 
-### RTC
+*RTC*
 The current state of the ReduxRTC connection
 
-#### Properties
+**Properties**
 
 - token: (string) - The unique identifier for the connection
 - room: (object) - The room instance [RTCMultiConnection](http://www.rtcmulticonnection.org/docs/)
@@ -116,4 +116,5 @@ Since the action is denoted as connected, the [`Middleware`](#middleware) handle
 
 ## Dependencies
 
+- [Redux](http://redux.js.org/)
 - [RTCMultiConnection](https://github.com/muaz-khan/RTCMultiConnection)
