@@ -1,50 +1,42 @@
-ReduxRTC
---------
+# ReduxRTC
 
 Peer2Peer connected states using Redux and WebRTC
 
-[GITHUB](https://github.com/rphansen91/redux-rtc)
-================= 
-[DEMO](https://rphansen91.github.io/redux-rtc/) 
-=================
+## [GITHUB](https://github.com/rphansen91/redux-rtc)
+## [DEMO](https://rphansen91.github.io/redux-rtc/) 
 
-Table of contents
-=================
+## Table of contents
 
   * [Installation](#installation)
   * [Usage](#usage)
     * [Middleware](#middleware)
     * [Reducer](#reducer)
     * [Store](#store)
-    * [Create](#create)
-    * [Enter](#enter)
+    * [Create](#create-room)
+    * [Enter](#enter-room)
     * [State](#state)
     * [Dispatch](#dispatch)
   * [Conclusion](#conclusion)
   * [Dependencies](#dependencies)
 
-Installation
-============
+## Installation
 
 `npm install redux-rtc -S`
 
-Usage
-=====
+## Usage
 
 ```js
 import { createStore, combineReducers, applyMiddleware } from 'redux'
 import { connected, rtc, create, enter } from 'redux-rtc'
 ```
 
-Middleware
-----------
+## Middleware
 
 ```js
 const middleware = applyMiddleware(connected)
 ```
 
-Reducer
--------
+## Reducer
 
 ```js
 const rootReducer = combineReducers({
@@ -53,49 +45,44 @@ const rootReducer = combineReducers({
 })
 ```
 
-Store
------
+## Store
 
 ```js
 const store = createStore(rootReducer, middleware)
 ```
 
-Create
-------
+## Create Room
 
 ```js
 store.dispatch(create())
 ```
 
-Once created the store will contain a token. This token is used in other clients to [`enter`](#enter) the room
+Once created the store will contain a token. This token is used in other clients to [`enter`](#enter-room) the room
 
-Enter
------
+## Enter Room
 
 ```js
 store.dispatch(enter(ROOM_TOKEN))
 ```
 
-State
------
+## State
 
 ```js
 const { rtc } = store.getState()
 ```
 
-# RTC
+### RTC
 The current state of the ReduxRTC connection
 
-## Properties
+#### Properties
 
 - token: (string) - The unique identifier for the connection
-- room: (object, required) - The room instance [RTCMultiConnection](http://www.rtcmulticonnection.org/docs/)
+- room: (object) - The room instance [RTCMultiConnection](http://www.rtcmulticonnection.org/docs/)
 - streams: (array[VideoElement]) - All of the connected media elements
 - loading: false (boolean) - The loading status of the room
 - error: 'No Room Found' (string) - Errors will propagate here
 
-Dispatch
---------
+## Dispatch
 
 By default actions that are dispatched do not propagate to connected clients. To share the actions across all peers the property `connected` should be added to the action
 
@@ -123,10 +110,8 @@ var toggleReducer = function (state, action) {
 
 Since the action is denoted as connected, the [`Middleware`](#middleware) handles posting the message to the connection and the connected peers recieve the action and dispatch to their cooresponding stores.
 
-Conclusion
-==========
+## Conclusion
 
-Dependencies
-============
+## Dependencies
 
 - [RTCMultiConnection](https://github.com/muaz-khan/RTCMultiConnection)
