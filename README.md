@@ -1,5 +1,10 @@
 # ReduxRTC
 
+[![Code Coverage](https://img.shields.io/codecov/c/github/rphansen91/redux-rtc/master.svg?style=flat-square)](https://codecov.io/github/rphansen91/redux-rtc)
+[![Version](https://img.shields.io/npm/v/redux-rtc.svg?style=flat-square)](https://www.npmjs.com/package/redux-rtc)
+[![Downloads](https://img.shields.io/npm/dm/redux-rtc.svg?style=flat-square)](http://npm-stat.com/charts.html?package=redux-rtc&from=2017-02-01)
+[![ISC License](https://img.shields.io/npm/l/redux-rtc.svg?style=flat-square)](http://opensource.org/licenses/ISC)
+
 Peer 2 Peer connected states using Redux and WebRTC
 
 [![Demo](https://rphansen91.github.io/redux-rtc/dist/redux-rtc.gif)](https://rphansen91.github.io/redux-rtc/)
