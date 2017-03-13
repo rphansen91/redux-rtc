@@ -1,12 +1,11 @@
 {
   "name": "redux-rtc",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "State integration and dispatchers across connectyed clients",
-  "main": "./src/index.js",
+  "main": "./dist/index.js",
   "scripts": {
     "build": "NODE_ENV=production webpack",
     "start": "webpack && http-server -p 8000 -c-1",
-    "docs": "node docs.js",
     "test": "jest ./src"
   },
   "keywords": [
@@ -27,5 +26,9 @@
     "babelify": "^7.3.0",
     "html-webpack-plugin": "^2.28.0",
     "webpack": "^2.2.1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/rphansen91/redux-rtc"
   }
 }
