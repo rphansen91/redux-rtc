@@ -2,24 +2,19 @@ const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 
 const IS_PROD = process.env.NODE_ENV === 'production' ? true : false;
-const PUBLIC_PATH = IS_PROD ? '//rphansen91.github.io/redux-rtc' : ''
+const IS_DEMO = process.env.IS_DEMO === 'demo' ? true : false;
 
-module.exports = {
-    entry: "./src/index.js",
+const PUBLIC_PATH = (IS_PROD) ? '//rphansen91.github.io/redux-rtc' : ''
+
+const config = {
+    entry: IS_DEMO ? "./src/demo.js" : "./src/index.js",
     output: {
         path: path.resolve(__dirname),
-        filename: "dist/index.js",
-        // libraryTarget: "commonjs",
-        library: "ReduxRTC",
+        filename: "main.js",
+        libraryTarget: "commonjs",
         publicPath: PUBLIC_PATH
     },
-    plugins: [
-        new HtmlWebpackPlugin({ 
-            template: 'src/index.html',
-            public: PUBLIC_PATH,
-            inject: false
-        })
-    ],
+    plugins: [],
     module: {
         loaders: [
             {   
@@ -33,3 +28,18 @@ module.exports = {
         ]
     }
 };
+
+if (IS_DEMO) {
+    config.output = {
+        path: path.resolve(__dirname),
+        filename: "demo.js",
+        publicPath: PUBLIC_PATH
+    }
+    config.plugins.push(new HtmlWebpackPlugin({ 
+        template: 'src/index.html',
+        public: PUBLIC_PATH,
+        inject: false
+    }))
+}
+
+module.exports = config;

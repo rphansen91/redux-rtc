@@ -1,6 +1,6 @@
 # ReduxRTC
 
-Peer2Peer connected states using Redux and WebRTC
+Peer 2 Peer connected states using Redux and WebRTC
 
 [![Demo](https://rphansen91.github.io/redux-rtc/dist/redux-rtc.gif)](https://rphansen91.github.io/redux-rtc/)
 
