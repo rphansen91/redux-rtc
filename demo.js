@@ -60,7 +60,7 @@
 /******/ 	__webpack_require__.o = function(object, property) { return Object.prototype.hasOwnProperty.call(object, property); };
 /******/
 /******/ 	// __webpack_public_path__
-/******/ 	__webpack_require__.p = "//rphansen91.github.io/redux-rtc";
+/******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
 /******/ 	return __webpack_require__(__webpack_require__.s = 34);
@@ -933,10 +933,10 @@ module.exports = g;
 
 __webpack_require__(33);
 
-var connected = __webpack_require__(14);
-var rtc = __webpack_require__(15);
+var connected = __webpack_require__(15);
+var rtc = __webpack_require__(16);
 
-var _require = __webpack_require__(16),
+var _require = __webpack_require__(11),
     create = _require.create,
     enter = _require.enter;
 
@@ -991,7 +991,92 @@ if (process.env.NODE_ENV !== 'production' && typeof isCrushed.name === 'string' 
 "use strict";
 
 
-var init = __webpack_require__(12);
+var _require = __webpack_require__(1),
+    connection = _require.connection;
+
+var _require2 = __webpack_require__(14),
+    createRoom = _require2.createRoom,
+    enterRoom = _require2.enterRoom;
+
+/**
+ * Create RTC Connection
+ * 
+ * @example
+ * 
+ * import { create } from 'redux-rtc';
+ * 
+ * dispatch(create());
+ * 
+ */
+
+var create = function create(payload) {
+    return function (dispatch) {
+        var onstream = function onstream(e) {
+            return dispatch(connection.reaction(e));
+        };
+
+        dispatch(connection.loading());
+
+        createRoom(payload, onstream).then(function (room) {
+            room.onmessage = function (e) {
+                return dispatch(e.data);
+            };
+            dispatch(connection.create({
+                token: room.channel,
+                room: room
+            }));
+        }).catch(function (err) {
+            dispatch(connection.error(err));
+        });
+    };
+};
+
+/**
+ * Join Open RTC Connection
+ * 
+ * @example
+ * 
+ * import { enter } from 'redux-rtc';
+ * 
+ * dispatch(enter({@link Connection#token}));
+ * 
+ */
+
+var enter = function enter(payload) {
+    return function (dispatch) {
+        var onstream = function onstream(e) {
+            return dispatch(connection.reaction(e));
+        };
+
+        dispatch(connection.loading());
+
+        enterRoom(payload, onstream).then(function (room) {
+            room.onmessage = function (e) {
+                return dispatch(e.data);
+            };
+            dispatch(connection.create({
+                token: room.channel,
+                room: room
+            }));
+        }).catch(function (err) {
+            dispatch(connection.error(err));
+        });
+    };
+};
+
+module.exports = {
+    create: create,
+    enter: enter
+};
+
+/***/ }),
+/* 12 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var init = __webpack_require__(13);
 
 var _require = __webpack_require__(0),
     flow = _require.flow;
@@ -1001,24 +1086,6 @@ var permissions = {
     video: true,
     data: true
 };
-
-/**
- * 
- * Connect Web RTC Helpers
- * @constructor
- * 
- * @param {string} sessionDescription
- *  The session that was saved by room creater and retrieved by peer
- *  e.g. sessionDescriptiom is the only saved data
- * 
- * @param {object} options
- *  Key Event lifecycle hooks
- *     - onstream
- *     - onunload
- *  
- * @returns {Promise} 
- *  When resolved will be an open RTC connection
- */
 
 var Connect = function Connect(sessionDescription, options) {
     return init.then(function (RTC) {
@@ -1054,7 +1121,7 @@ var Connect = function Connect(sessionDescription, options) {
 module.exports = Connect;
 
 /***/ }),
-/* 12 */
+/* 13 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1092,13 +1159,13 @@ module.exports = new Promise(function (res, rej) {
 });
 
 /***/ }),
-/* 13 */
+/* 14 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-var connect = __webpack_require__(11);
+var connect = __webpack_require__(12);
 
 var _require = __webpack_require__(17),
     onunload = _require.onunload;
@@ -1169,7 +1236,7 @@ module.exports = {
 };
 
 /***/ }),
-/* 14 */
+/* 15 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1216,7 +1283,7 @@ var connected = function connected(_ref) {
 module.exports = connected;
 
 /***/ }),
-/* 15 */
+/* 16 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1300,91 +1367,6 @@ var connection = function connection() {
 };
 
 module.exports = connection;
-
-/***/ }),
-/* 16 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-var _require = __webpack_require__(1),
-    connection = _require.connection;
-
-var _require2 = __webpack_require__(13),
-    createRoom = _require2.createRoom,
-    enterRoom = _require2.enterRoom;
-
-/**
- * Create RTC Connection
- * 
- * @example
- * 
- * import { create } from 'redux-rtc';
- * 
- * dispatch(create());
- * 
- */
-
-var create = function create(payload) {
-    return function (dispatch) {
-        var onstream = function onstream(e) {
-            return dispatch(connection.reaction(e));
-        };
-
-        dispatch(connection.loading());
-
-        createRoom(payload, onstream).then(function (room) {
-            room.onmessage = function (e) {
-                return dispatch(e.data);
-            };
-            dispatch(connection.create({
-                token: room.channel,
-                room: room
-            }));
-        }).catch(function (err) {
-            dispatch(connection.error(err));
-        });
-    };
-};
-
-/**
- * Join Open RTC Connection
- * 
- * @example
- * 
- * import { enter } from 'redux-rtc';
- * 
- * dispatch(enter({@link Connection#token}));
- * 
- */
-
-var enter = function enter(payload) {
-    return function (dispatch) {
-        var onstream = function onstream(e) {
-            return dispatch(connection.reaction(e));
-        };
-
-        dispatch(connection.loading());
-
-        enterRoom(payload, onstream).then(function (room) {
-            room.onmessage = function (e) {
-                return dispatch(e.data);
-            };
-            dispatch(connection.create({
-                token: room.channel,
-                room: room
-            }));
-        }).catch(function (err) {
-            dispatch(connection.error(err));
-        });
-    };
-};
-
-module.exports = {
-    create: create,
-    enter: enter
-};
 
 /***/ }),
 /* 17 */

@@ -1,5 +1,5 @@
 const { connection } = require('./actions');
-const { createRoom, enterRoom } = require('./connect/rooms');
+const { createRoom, enterRoom } = require('../connect/rooms');
 
 /**
  * Create RTC Connection

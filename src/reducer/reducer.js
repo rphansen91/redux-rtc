@@ -1,5 +1,5 @@
 const { pluck } = require('rp-utils');
-const actions = require('./actions');
+const actions = require('../actions/actions');
 
 const pluckErr = payload => 
     pluck(payload, 'error.message') || pluck(payload, 'error') || null

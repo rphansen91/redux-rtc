@@ -7,24 +7,6 @@ const permissions = {
     data: true
 }
 
-/**
- * 
- * Connect Web RTC Helpers
- * @constructor
- * 
- * @param {string} sessionDescription
- *  The session that was saved by room creater and retrieved by peer
- *  e.g. sessionDescriptiom is the only saved data
- * 
- * @param {object} options
- *  Key Event lifecycle hooks
- *     - onstream
- *     - onunload
- *  
- * @returns {Promise} 
- *  When resolved will be an open RTC connection
- */
-
 const Connect = (sessionDescription, options) => init.then(RTC => new Promise((res, rej) => {
     const connection = new RTC();
     connection.enableFileSharing = true; 

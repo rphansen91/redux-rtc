@@ -1,8 +1,8 @@
 require('whatwg-fetch');
 
-const connected = require('./middleware');
-const rtc = require('./reducer');
-const { create, enter } = require('./thunks');
+const connected = require('./middleware/middleware');
+const rtc = require('./reducer/reducer');
+const { create, enter } = require('./actions/thunks');
 
 module.exports = {
     connected,
