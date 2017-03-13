@@ -2,7 +2,7 @@
 
 Peer2Peer connected states using Redux and WebRTC
 
-[![Demo](https://rphansen91.github.io/redux-rtc/dist/usage.gif)](https://rphansen91.github.io/redux-rtc/)
+[![Demo](https://rphansen91.github.io/redux-rtc/dist/rtc.gif)](https://rphansen91.github.io/redux-rtc/)
 
 [Github](https://github.com/rphansen91/redux-rtc)
 [Demo](https://rphansen91.github.io/redux-rtc/)
