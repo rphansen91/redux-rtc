@@ -1,6 +1,6 @@
 {
   "name": "redux-rtc",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "Peer 2 Peer connected states using Redux and WebRTC",
   "main": "./main.js",
   "scripts": {
