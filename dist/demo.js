@@ -39,26 +39,26 @@
         root: find('#root')[0],
         data: find('#data')[0],
         room: find('#room').on('keyup', inputChange)[0],
-        open: find('#open').on('click', openRoom)[0],
-        join: find('#join').on('click', joinRoom)[0],
+        create: find('#create').on('click', createRoom)[0],
+        enter: find('#enter').on('click', enterRoom)[0],
         toggle: find('#toggle').on('click', toggleState)[0]
     }
 
     function inputChange (ev) {
         if (ev.target.value) {
-            dom.open.disabled = true;
-            dom.join.disabled = false;
+            dom.create.disabled = true;
+            dom.enter.disabled = false;
         } else {
-            dom.join.disabled = true;
-            dom.open.disabled = false;
+            dom.enter.disabled = true;
+            dom.create.disabled = false;
         }
     }
 
-    function openRoom () {
+    function createRoom () {
         store.dispatch(create());
     }
 
-    function joinRoom () {
+    function enterRoom () {
         store.dispatch(enter(dom.room.value));
     }
 
