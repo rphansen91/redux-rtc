@@ -25,7 +25,7 @@ const permissions = {
  *  When resolved will be an open RTC connection
  */
 
-module.exports = (sessionDescription, options) => init.then(RTC => new Promise((res, rej) => {
+const Connect = (sessionDescription, options) => init.then(RTC => new Promise((res, rej) => {
     const connection = new RTC();
     connection.enableFileSharing = true; 
     connection.session = permissions;
@@ -49,3 +49,5 @@ module.exports = (sessionDescription, options) => init.then(RTC => new Promise((
         res(connection);
     }
 }))
+
+module.exports = Connect;

@@ -1,13 +1,12 @@
 require('whatwg-fetch');
 
-const reducer = require('./reducer');
-const actions = require('./actions');
-const { create, enter, dispatchAll } = require('./thunks');
+const connected = require('./middleware');
+const rtc = require('./reducer');
+const { create, enter } = require('./thunks');
 
 module.exports = {
-    reducer,
-    actions,
+    connected,
+    rtc,
     create,
-    enter,
-    dispatchAll
+    enter
 }

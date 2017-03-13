@@ -1,0 +1,12 @@
+body {font-size: 16px;font-family: Courier New, Courier, monospace;}
+input {width: 100%; height: 2em; font-size: 2em; border: none; border-bottom: 4px solid rgba(0,0,0,0.4);outline: none;}
+.fork-me {position: absolute;top: 0;right: 0;border: 0;z-index: 2;clip-path: polygon(0% 0%, 100% 0%, 100% 100%, 50% 50%);}
+.btn-grp {display: flex; flex-direction: row; flex-wrap: nowrap; margin: 1em 0;}
+.btn-grp button {position: relative; flex: 1; color: #fff;height: 3em;font-size:1em;border: none; vertical-align: middle;outline: none;margin: 0.1em;text-transform: uppercase;cursor: pointer;transition: transform 0.2s ease-out;}
+.btn-grp button:after {position: absolute;z-index:-1;content: '';bottom: -4px; height: 4px; left: 0; right: 0; background-color: rgba(0,0,0,0.4); transition: transform 0.2s ease-out;}
+.btn-grp button:hover {transform: translate3d(0,2px,0);}
+.btn-grp button:hover:after{transform: translate3d(0,-2px,0);}
+.btn-grp button:disabled {order: 1; opacity: 0.6;transition: opacity 0.2s ease-out;transform: translate3d(0,0,0);}
+.btn-grp button:disabled:hover:after{transform: translate3d(0,0,0);}
+#root {display: flex; flex-direction: row; flex-wrap: wrap;justify-content: center;align-items: flex-start;margin: 0.4em auto;}
+video {display: block; flex: 1; max-width: 50%;}
