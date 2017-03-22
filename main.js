@@ -1084,8 +1084,6 @@ module.exports = new Promise(function (res, rej) {
     flow.Safely(function () {
         var script = document.createElement('script');
         document.body.appendChild(script);
-        return script;
-    }).map(function (script) {
         script.src = SCRIPT_URL;
         script.onerror = rej;
         script.onload = function () {

@@ -12,9 +12,6 @@ module.exports = new Promise((res, rej) => {
     flow.Safely(() => {
         const script = document.createElement('script');
         document.body.appendChild(script);
-        return script;
-    })
-    .map(script => {
         script.src = SCRIPT_URL;
         script.onerror = rej;
         script.onload = () => {
